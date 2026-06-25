@@ -15,4 +15,12 @@ src/
         ├── types.ts           # Type Aliases, Interfaces & Literal Values
         ├── taskUtils.ts       # Generic & Pure logic functions
         └── TaskUI.ts          # Native DOM Layout Layer
-        
+
+## 🧪 Unit Testing (Lab 3)
+
+We have configured a lightweight, secure unit testing workflow that runs natively without hitting binary/security sandbox restrictions.
+
+### Running Tests
+To execute the test suites locally using `pnpm`, run the following command:
+```bash
+pnpm test
