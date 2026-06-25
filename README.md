@@ -15,3 +15,4 @@ src/
         ├── types.ts           # Type Aliases, Interfaces & Literal Values
         ├── taskUtils.ts       # Generic & Pure logic functions
         └── TaskUI.ts          # Native DOM Layout Layer
+        
