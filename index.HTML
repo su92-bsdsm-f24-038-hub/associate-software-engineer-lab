@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DownLabs - Lab 2 UI Verification</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; padding: 30px; margin: 0; }
+        .container { max-width: 500px; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin: 0 auto; }
+        h2 { color: #333; margin-top: 0; border-bottom: 2px solid #edf2f7; padding-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: #4a5568; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #3182ce; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        button:hover { background-color: #2b6cb0; }
+        .task-list { margin-top: 25px; list-style: none; padding: 0; }
+        .task-item { background: #f7fafc; padding: 12px; border-left: 4px solid #3182ce; margin-bottom: 10px; border-radius: 0 5px 5px 0; display: flex; justify-content: space-between; align-items: center; }
+        .task-meta { font-size: 0.85em; color: #718096; }
+        .status-badge { background: #e2e8f0; padding: 3px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>📋 Task Management Module</h2>
+        
+        <div class="form-group">
+            <label for="taskTitle">Task Title</label>
+            <input type="text" id="taskTitle" placeholder="Enter task title...">
+        </div>
+
+        <div class="form-group">
+            <label for="taskPriority">Priority</label>
+            <select id="taskPriority">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+        </div>
+
+        <button id="addTaskBtn">Add Task</button>
+
+        <ul class="task-list" id="taskList">
+            </ul>
+    </div>
+
+    <script>
+        // In-memory state mimicking taskUtils.ts
+        const tasks = [];
+
+        document.getElementById('addTaskBtn').addEventListener('click', () => {
+            const titleInput = document.getElementById('taskTitle');
+            const priorityInput = document.getElementById('taskPriority');
+
+            if (!titleInput.value.trim()) {
+                alert('Please enter a task title!');
+                return;
+            }
+
+            const newTask = {
+                id: Date.now().toString(),
+                title: titleInput.value,
+                status: 'pending',
+                priority: priorityInput.value
+            };
+
+            tasks.push(newTask);
+            renderTasks();
+            titleInput.value = ''; // clear input
+        });
+
+        function renderTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+
+            tasks.forEach(task => {
+                const li = document.createElement('li');
+                li.className = 'task-item';
+                li.innerHTML = `
+                    <div>
+                        <strong>${task.title}</strong>
+                        <div class="task-meta">Priority: ${task.priority}</div>
+                    </div>
+                    <span class="status-badge">${task.status}</span>
+                `;
+                taskList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
