@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Blog App",
-  description: "A modern blog application built with Next.js and TypeScript",
+  description: "Blog application built with Next.js",
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-gray-50">{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

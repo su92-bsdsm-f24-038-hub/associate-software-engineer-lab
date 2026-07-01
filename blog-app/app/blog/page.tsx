@@ -4,28 +4,23 @@ import BlogList from "@/components/BlogList";
 const MOCK_TAGS = ["tech", "react", "nextjs", "webdev", "javascript"];
 
 async function getPosts(): Promise<Post[]> {
-  try {
-    const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
-      next: { revalidate: 3600 },
-    });
+  const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
+    next: { revalidate: 3600 },
+  });
 
-    if (!res.ok) {
-      throw new Error(`Failed to fetch posts: ${res.status}`);
-    }
-
-    const posts: Post[] = await res.json();
-
-    return posts.map((post) => ({
-      ...post,
-      tags: MOCK_TAGS.sort(() => Math.random() - 0.5).slice(
-        0,
-        Math.floor(Math.random() * 3) + 1
-      ),
-    }));
-  } catch (error) {
-    console.error("Error fetching posts:", error);
-    throw error;
+  if (!res.ok) {
+    throw new Error(`Failed to fetch posts: ${res.status}`);
   }
+
+  const posts: Post[] = await res.json();
+
+  return posts.map((post) => ({
+    ...post,
+    tags: MOCK_TAGS.sort(() => Math.random() - 0.5).slice(
+      0,
+      Math.floor(Math.random() * 3) + 1
+    ),
+  }));
 }
 
 export default async function BlogPage() {

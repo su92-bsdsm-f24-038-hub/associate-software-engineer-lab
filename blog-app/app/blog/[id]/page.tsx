@@ -8,29 +8,24 @@ interface BlogDetailPageProps {
 }
 
 async function getPost(id: string): Promise<Post> {
-  try {
-    const res = await fetch(
-      `https://jsonplaceholder.typicode.com/posts/${id}`,
-      {
-        next: { revalidate: 3600 },
-      }
-    );
-
-    if (!res.ok) {
-      throw new Error(`Failed to fetch post: ${res.status}`);
+  const res = await fetch(
+    `https://jsonplaceholder.typicode.com/posts/${id}`,
+    {
+      next: { revalidate: 3600 },
     }
+  );
 
-    const post: Post = await res.json();
-
-    if (!post.id) {
-      throw new Error("Post not found");
-    }
-
-    return post;
-  } catch (error) {
-    console.error(`Error fetching post ${id}:`, error);
-    throw error;
+  if (!res.ok) {
+    throw new Error(`Failed to fetch post: ${res.status}`);
   }
+
+  const post: Post = await res.json();
+
+  if (!post.id) {
+    throw new Error("Post not found");
+  }
+
+  return post;
 }
 
 export default async function BlogDetailPage({

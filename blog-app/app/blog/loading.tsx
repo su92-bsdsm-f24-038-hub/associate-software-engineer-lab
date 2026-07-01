@@ -8,7 +8,6 @@ export default function BlogLoading() {
         </div>
 
         <div className="space-y-6">
-          {/* Filters skeleton */}
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -22,7 +21,6 @@ export default function BlogLoading() {
             </div>
           </div>
 
-          {/* Blog posts skeleton */}
           <div className="space-y-6">
             {[...Array(5)].map((_, i) => (
               <div
