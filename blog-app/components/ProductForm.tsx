@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { validateProductForm } from '@/modules/products/productService';
-import { ProductFormData, ProductFormErrors } from '@/modules/products/types';
+import { validateProductData } from '@/src/domain/products/productRules';
+import { ProductFormData, ProductFormErrors } from '@/src/domain/products/types';
 
 interface ProductFormProps {
   initialData?: ProductFormData;
@@ -18,7 +18,7 @@ export default function ProductForm({ initialData, isEditMode = false, onSubmitS
   });
 
   const [errors, setErrors] = useState<ProductFormErrors>({});
-  const currentErrors = validateProductForm(formData);
+  const currentErrors = validateProductData(formData);
   const isFormInvalid = Object.keys(currentErrors).length > 0;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -31,7 +31,7 @@ export default function ProductForm({ initialData, isEditMode = false, onSubmitS
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const validationErrors = validateProductForm(formData);
+    const validationErrors = validateProductData(formData);
     
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);

@@ -1,8 +1,10 @@
 import Workboard from "@/components/workboard/Workboard";
-import { fetchBlogPosts } from "@/modules/blog/blogService";
+import { BlogQueryService } from "@/src/application/blog/BlogQueryService";
+import { JsonPlaceholderBlogPostRepository } from "@/src/infrastructure/blog/JsonPlaceholderBlogPostRepository";
 
 export default async function HomePage() {
-  const posts = await fetchBlogPosts(12);
+  const blogQueryService = new BlogQueryService(new JsonPlaceholderBlogPostRepository());
+  const posts = await blogQueryService.getPosts(12);
 
   return <Workboard initialPosts={posts} />;
 }

@@ -1,9 +1,11 @@
 import BlogList from "@/components/BlogList";
-import { fetchBlogPosts } from "@/modules/blog/blogService";
+import { BlogQueryService } from "@/src/application/blog/BlogQueryService";
+import { JsonPlaceholderBlogPostRepository } from "@/src/infrastructure/blog/JsonPlaceholderBlogPostRepository";
 
 export default async function BlogPage() {
   try {
-    const posts = await fetchBlogPosts(30);
+    const blogQueryService = new BlogQueryService(new JsonPlaceholderBlogPostRepository());
+    const posts = await blogQueryService.getPosts(30);
 
     if (!posts || posts.length === 0) {
       return (

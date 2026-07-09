@@ -1,13 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import Link from "next/link";
 import ProductForm from "@/components/ProductForm";
-import { BlogPost } from "@/modules/blog/types";
-import { createProduct, deleteProduct, updateProduct } from "@/modules/products/productService";
-import { Product, ProductFormData } from "@/modules/products/types";
-import { createTask, deleteTask, filterTasks, updateTaskStatus } from "@/modules/tasks/taskService";
-import { Task, TaskFilter, TaskStatus } from "@/modules/tasks/types";
+import { BlogPost } from "@/src/domain/blog/types";
+import { TaskFilter, TaskStatus } from "@/src/domain/tasks/types";
+import { useProductCrud } from "@/src/presentation/hooks/useProductCrud";
+import { useTaskBoard } from "@/src/presentation/hooks/useTaskBoard";
 
 interface WorkboardProps {
   initialPosts: BlogPost[];
@@ -20,35 +18,19 @@ const statusStyles: Record<TaskStatus, string> = {
 };
 
 export default function Workboard({ initialPosts }: WorkboardProps) {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [taskInput, setTaskInput] = useState("");
-  const [taskFilter, setTaskFilter] = useState<TaskFilter>("all");
+  const {
+    taskInput,
+    taskFilter,
+    filteredTasks,
+    setTaskInput,
+    setTaskFilter,
+    addTask,
+    markInProgress,
+    markDone,
+    removeTask,
+  } = useTaskBoard();
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-
-  const filteredTasks = useMemo(() => filterTasks(tasks, taskFilter), [tasks, taskFilter]);
-
-  const handleAddTask = () => {
-    try {
-      const task = createTask({ title: taskInput });
-      setTasks((prev) => [task, ...prev]);
-      setTaskInput("");
-    } catch {
-      // The input is intentionally validated in the domain module.
-    }
-  };
-
-  const handleProductSubmit = (data: ProductFormData) => {
-    if (editingProduct) {
-      setProducts((prev) => updateProduct(prev, editingProduct.id, data));
-      setEditingProduct(null);
-      return;
-    }
-
-    const next = createProduct(data);
-    setProducts((prev) => [next, ...prev]);
-  };
+  const { products, editingProduct, setEditingProduct, submitProduct, removeProduct } = useProductCrud();
 
   const postPreview = initialPosts.slice(0, 4);
 
@@ -87,7 +69,7 @@ export default function Workboard({ initialPosts }: WorkboardProps) {
             />
             <button
               type="button"
-              onClick={handleAddTask}
+              onClick={addTask}
               className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white"
             >
               Add
@@ -109,21 +91,21 @@ export default function Workboard({ initialPosts }: WorkboardProps) {
                     <button
                       type="button"
                       className="rounded border border-slate-200 px-2 py-1 text-xs"
-                      onClick={() => setTasks((prev) => updateTaskStatus(prev, task.id, "in-progress"))}
+                      onClick={() => markInProgress(task.id)}
                     >
                       Start
                     </button>
                     <button
                       type="button"
                       className="rounded border border-slate-200 px-2 py-1 text-xs"
-                      onClick={() => setTasks((prev) => updateTaskStatus(prev, task.id, "done"))}
+                      onClick={() => markDone(task.id)}
                     >
                       Done
                     </button>
                     <button
                       type="button"
                       className="rounded border border-rose-200 px-2 py-1 text-xs text-rose-600"
-                      onClick={() => setTasks((prev) => deleteTask(prev, task.id))}
+                      onClick={() => removeTask(task.id)}
                     >
                       Delete
                     </button>
@@ -159,7 +141,7 @@ export default function Workboard({ initialPosts }: WorkboardProps) {
                 : undefined
             }
             isEditMode={Boolean(editingProduct)}
-            onSubmitSuccess={handleProductSubmit}
+            onSubmitSuccess={submitProduct}
           />
 
           <ul className="mt-4 space-y-2">
@@ -181,7 +163,7 @@ export default function Workboard({ initialPosts }: WorkboardProps) {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setProducts((prev) => deleteProduct(prev, product.id))}
+                      onClick={() => removeProduct(product.id)}
                       className="rounded border border-rose-200 px-2 py-1 text-xs text-rose-600"
                     >
                       Delete

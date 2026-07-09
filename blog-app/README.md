@@ -7,10 +7,11 @@ Integrated Next.js workboard combining:
 - Product CRUD operations
 - Prisma database layer (users, tasks, posts, comments)
 - Mock login/session auth with protected dashboard route
+- Clean architecture layering: domain, application, infrastructure, presentation
 
 ## Branch
 
-- feature/day-09-authentication-and-protected-routes
+- feature/day-10-clean-architecture-basics
 
 ## Tech Stack
 
@@ -49,9 +50,21 @@ modules/
 prisma/
   schema.prisma
   seed.ts
+src/
+  domain/
+  application/
+  infrastructure/
+  presentation/
 tests/
   modules/
 ```
+
+## Clean Architecture Notes
+
+- domain: business entities and business rules only.
+- application: use-case services orchestrating domain operations.
+- infrastructure: data access implementations and external gateways.
+- presentation: UI and hooks consuming application services.
 
 ## Setup (Fresh Clone)
 
