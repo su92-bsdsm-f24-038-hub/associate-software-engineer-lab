@@ -5,10 +5,12 @@ Integrated Next.js workboard combining:
 - Todo management
 - Blog browsing
 - Product CRUD operations
+- Prisma database layer (users, tasks, posts, comments)
+- Mock login/session auth with protected dashboard route
 
 ## Branch
 
-- feature/day-07-week-1-integration-review
+- feature/day-09-authentication-and-protected-routes
 
 ## Tech Stack
 
@@ -17,23 +19,36 @@ Integrated Next.js workboard combining:
 - TypeScript (strict)
 - Tailwind CSS
 - Vitest (unit tests)
+- Prisma + SQLite
+- Mock auth (cookie-based session)
 
 ## Project Structure
 
 ```text
 app/
+  dashboard/
+  login/
   layout.tsx
   page.tsx
   blog/
   products/
 components/
+  auth/SessionNav.tsx
   BlogList.tsx
   ProductForm.tsx
   workboard/Workboard.tsx
+lib/
+  auth/
+  db/
+    client.ts
+    repositories/
 modules/
   blog/
   products/
   tasks/
+prisma/
+  schema.prisma
+  seed.ts
 tests/
   modules/
 ```
@@ -52,6 +67,24 @@ tests/
 No secret environment variables are required for this lab.
 
 Use .env.example as the only environment file template.
+
+Required variable:
+
+- DATABASE_URL="file:./dev.db"
+
+## Auth Flow (Mock)
+
+- Login page: /login
+- Protected page: /dashboard
+- Middleware protects /dashboard and redirects unauthenticated users to /login.
+- Session is stored in an httpOnly cookie.
+- Mock password for lab testing: downlabs123
+
+## Prisma Workflows
+
+- Generate Prisma client: npm run prisma:generate
+- Create/apply migration: npm run prisma:migrate -- --name init_day08
+- Seed database: npm run db:seed
 
 ## Quality Checks
 

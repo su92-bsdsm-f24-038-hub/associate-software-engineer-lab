@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SessionNav from "@/components/auth/SessionNav";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function RootLayout({
               <Link href="/">Workboard</Link>
               <Link href="/blog">Blog</Link>
               <Link href="/products">Products</Link>
+              <SessionNav />
             </nav>
           </div>
         </header>
