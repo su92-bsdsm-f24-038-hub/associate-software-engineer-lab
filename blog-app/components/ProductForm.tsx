@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { ProductFormData, FormErrors } from '@/types/product';
+import React, { useState } from 'react';
+import { validateProductForm } from '@/modules/products/productService';
+import { ProductFormData, ProductFormErrors } from '@/modules/products/types';
 
 interface ProductFormProps {
   initialData?: ProductFormData;
@@ -10,31 +11,14 @@ interface ProductFormProps {
 }
 
 export default function ProductForm({ initialData, isEditMode = false, onSubmitSuccess }: ProductFormProps) {
-  // Form State
   const [formData, setFormData] = useState<ProductFormData>({
     title: initialData?.title || '',
     price: initialData?.price || 0,
     description: initialData?.description || '',
   });
 
-  // UI States
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isConfirmed, setIsConfirmed] = useState(false);
-
-  // Validation Logic
-  const validateForm = (data: ProductFormData): FormErrors => {
-    const activeErrors: FormErrors = {};
-    if (!data.title.trim()) activeErrors.title = 'Product title is required';
-    if (data.price <= 0) activeErrors.price = 'Price must be greater than 0';
-    if (data.description.trim().length < 10) {
-      activeErrors.description = 'Description must be at least 10 characters long';
-    }
-    return activeErrors;
-  };
-
-  // Run validation whenever form data changes to check if button should be disabled
-  const currentErrors = validateForm(formData);
+  const [errors, setErrors] = useState<ProductFormErrors>({});
+  const currentErrors = validateProductForm(formData);
   const isFormInvalid = Object.keys(currentErrors).length > 0;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -47,7 +31,7 @@ export default function ProductForm({ initialData, isEditMode = false, onSubmitS
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const validationErrors = validateForm(formData);
+    const validationErrors = validateProductForm(formData);
     
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -55,30 +39,11 @@ export default function ProductForm({ initialData, isEditMode = false, onSubmitS
     }
 
     setErrors({});
-    setIsSubmitting(true);
-
-    // Mock API Submission / Confirmation State
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsConfirmed(true);
-      onSubmitSuccess(formData);
-    }, 1500);
+    onSubmitSuccess(formData);
+    if (!isEditMode) {
+      setFormData({ title: '', price: 0, description: '' });
+    }
   };
-
-  if (isConfirmed) {
-    return (
-      <div className="p-6 max-w-md mx-auto bg-green-50 border border-green-200 text-green-800 rounded-lg text-center shadow-sm">
-        <h3 className="text-xl font-bold mb-2">🎉 Success!</h3>
-        <p>Product has been successfully {isEditMode ? 'updated' : 'created'}.</p>
-        <button 
-          onClick={() => setIsConfirmed(false)} 
-          className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm transition"
-        >
-          Add Another Product
-        </button>
-      </div>
-    );
-  }
 
   return (
     <form onSubmit={handleSubmit} className="p-6 max-w-md mx-auto bg-white rounded-xl shadow-md space-y-4 border">
@@ -131,17 +96,16 @@ export default function ProductForm({ initialData, isEditMode = false, onSubmitS
         {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
       </div>
 
-      {/* Submit Button */}
       <button
         type="submit"
-        disabled={isFormInvalid || isSubmitting}
+        disabled={isFormInvalid}
         className={`w-full py-2 px-4 rounded-md text-white font-semibold transition ${
-          isFormInvalid || isSubmitting
+          isFormInvalid
             ? 'bg-gray-400 cursor-not-allowed'
             : 'bg-blue-600 hover:bg-blue-700 shadow-sm'
         }`}
       >
-        {isSubmitting ? 'Submitting...' : isEditMode ? 'Update Product' : 'Create Product'}
+        {isEditMode ? 'Update Product' : 'Create Product'}
       </button>
     </form>
   );
